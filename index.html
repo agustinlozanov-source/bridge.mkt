@@ -29,21 +29,48 @@
         <section class="bg-gray-800 rounded-xl p-6 border border-gray-700 shadow-xl">
             <div class="flex items-center mb-6">
                 <i class="fa-solid fa-bullhorn text-blue-400 mr-3 text-xl"></i>
-                <h2 class="text-xl font-semibold">Insumos de Marketing (API Ingest)</h2>
+                <h2 class="text-xl font-semibold">Insumos de Marketing (Trazabilidad Granular)</h2>
             </div>
             
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <div class="space-y-2">
+                    <label class="text-sm text-gray-400">Fecha de Campaña</label>
+                    <input type="date" id="campaign-date" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-sm text-gray-400">ID de Campaña (ej: META_REELS_001)</label>
+                    <input type="text" id="campaign-id" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="META_REELS_001">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-sm text-gray-400">Táctica</label>
+                    <select id="campaign-tactica" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">Selecciona una táctica</option>
+                        <option value="Conversión Mensajería">Conversión Mensajería</option>
+                        <option value="Branding/Alcance">Branding/Alcance</option>
+                        <option value="Retargeting">Retargeting</option>
+                    </select>
+                </div>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="space-y-2">
-                    <label class="text-sm text-gray-400">Inversión Meta Ads (USD)</label>
-                    <input type="number" step="0.01" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="0.00">
+                    <label class="text-sm text-gray-400">Gasto (USD)</label>
+                    <input type="number" step="0.01" id="campaign-spend" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="0.00">
                 </div>
                 <div class="space-y-2">
-                    <label class="text-sm text-gray-400">Alcance (Reach) - Algoritmo 2026</label>
-                    <input type="number" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="0">
+                    <label class="text-sm text-gray-400">Plataforma</label>
+                    <select id="campaign-platform" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">Selecciona plataforma</option>
+                        <option value="Instagram Reels">Instagram Reels</option>
+                        <option value="Facebook Feed">Facebook Feed</option>
+                        <option value="Stories">Stories</option>
+                        <option value="Otros">Otros</option>
+                    </select>
                 </div>
-                <div class="space-y-2">
-                    <label class="text-sm text-gray-400">Leads ManyChat (Conversaciones)</label>
-                    <input type="number" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="0">
+                <div class="flex items-end">
+                    <button id="save-campaign-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-lg transition">
+                        Guardar Campaña
+                    </button>
                 </div>
             </div>
         </section>
@@ -147,14 +174,46 @@
             .catch(err => console.error('❌ Error Firebase:', err));
 
         // Get input elements
-        const metaInput = document.querySelector('input[placeholder="0.00"]');
-        const reachInput = document.querySelectorAll('input[type="number"]')[1];
-        const leadsInput = document.querySelectorAll('input[type="number"]')[2];
+        const campaignDateInput = document.getElementById('campaign-date');
+        const campaignIdInput = document.getElementById('campaign-id');
+        const campaignTacticaInput = document.getElementById('campaign-tactica');
+        const campaignSpendInput = document.getElementById('campaign-spend');
+        const campaignPlatformInput = document.getElementById('campaign-platform');
+        const saveCampaignBtn = document.getElementById('save-campaign-btn');
+
         const clientIdInput = document.querySelector('input[placeholder="MC-89234"]');
         const ticketInput = document.querySelectorAll('input[step="0.01"]')[1];
         const peopleInput = document.querySelectorAll('input[type="number"]')[3];
         const creativoSelect = document.querySelector('select');
         const registrarBtn = document.getElementById('registrar-btn');
+
+        // Save campaign to Firestore
+        function saveCampaign() {
+            if (!campaignDateInput?.value || !campaignIdInput?.value || !campaignTacticaInput?.value || !campaignSpendInput?.value || !campaignPlatformInput?.value) {
+                alert('Por favor completa todos los campos');
+                return;
+            }
+
+            const campaignData = {
+                fecha: campaignDateInput.value,
+                id_campania: campaignIdInput.value,
+                tactica: campaignTacticaInput.value,
+                gasto: parseFloat(campaignSpendInput.value),
+                plataforma: campaignPlatformInput.value,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            db.collection('campaigns').doc(campaignIdInput.value).set(campaignData, { merge: true })
+                .then(() => {
+                    console.log('✅ Campaña guardada:', campaignIdInput.value);
+                    campaignDateInput.value = '';
+                    campaignIdInput.value = '';
+                    campaignTacticaInput.value = '';
+                    campaignSpendInput.value = '';
+                    campaignPlatformInput.value = '';
+                })
+                .catch(err => console.error('❌ Error:', err));
+        }
 
         function saveMarketingData() {
             const data = {
@@ -195,14 +254,12 @@
         }
 
         // Event listeners
+        if (saveCampaignBtn) {
+            saveCampaignBtn.addEventListener('click', saveCampaign);
+        }
         if (registrarBtn) {
             registrarBtn.addEventListener('click', saveTransaction);
         }
-
-        // Auto-save marketing data when inputs change
-        [metaInput, reachInput, leadsInput].forEach(el => {
-            if (el) el.addEventListener('change', saveMarketingData);
-        });
     </script>
 
 </body>
