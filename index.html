@@ -156,7 +156,6 @@
         const creativoSelect = document.querySelector('select');
         const registrarBtn = document.getElementById('registrar-btn');
 
-        // Save marketing inputs to Firestore
         function saveMarketingData() {
             const data = {
                 metaInversion: parseFloat(metaInput?.value || 0),
@@ -165,7 +164,7 @@
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             };
 
-            db.collection('bridge_mkt_data').doc('marketing_metrics').set(data, { merge: true })
+            db.collection('metrics').doc('marketing').set(data, { merge: true })
                 .then(() => console.log('✅ Marketing data saved'))
                 .catch(err => console.error('❌ Error:', err));
         }
@@ -185,7 +184,7 @@
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             };
 
-            db.collection('bridge_mkt_data').collection('transactions').add(transaction)
+            db.collection('transactions').add(transaction)
                 .then((docRef) => {
                     console.log('✅ Transacción guardada:', docRef.id);
                     clientIdInput.value = '';
