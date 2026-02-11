@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atmos Metrics - Dashboard de Entrada</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
+</head>
+<body class="bg-gray-900 text-gray-100 font-sans">
+
+    <nav class="border-b border-gray-800 p-4 bg-gray-900 sticky top-0 z-50">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+                ATMOS <span class="text-sm font-light text-gray-400">v2026</span>
+            </h1>
+            <div class="space-x-4">
+                <button class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm transition">Generar Reporte</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto p-6 space-y-8">
+
+        <section class="bg-gray-800 rounded-xl p-6 border border-gray-700 shadow-xl">
+            <div class="flex items-center mb-6">
+                <i class="fa-solid fa-bullhorn text-blue-400 mr-3 text-xl"></i>
+                <h2 class="text-xl font-semibold">Insumos de Marketing (API Ingest)</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="space-y-2">
+                    <label class="text-sm text-gray-400">Inversión Meta Ads (USD)</label>
+                    <input type="number" step="0.01" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="0.00">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-sm text-gray-400">Alcance (Reach) - Algoritmo 2026</label>
+                    <input type="number" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="0">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-sm text-gray-400">Leads ManyChat (Conversaciones)</label>
+                    <input type="number" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="0">
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-gray-800 rounded-xl p-6 border border-gray-700 shadow-xl">
+            <div class="flex items-center mb-6">
+                <i class="fa-solid fa-utensils text-green-400 mr-3 text-xl"></i>
+                <h2 class="text-xl font-semibold">Validación en Punto de Venta (Piso)</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="space-y-2">
+                    <label class="text-sm text-gray-400 italic">ID Cliente (Scan QR ManyChat)</label>
+                    <input type="text" class="w-full bg-gray-700 border border-green-900/50 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none placeholder-gray-500" placeholder="MC-89234">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-sm text-gray-400">Monto del Ticket ($)</label>
+                    <input type="number" step="0.01" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none" placeholder="0.00">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-sm text-gray-400">Número de Personas</label>
+                    <input type="number" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none" placeholder="1">
+                </div>
+                <div class="flex items-end">
+                    <button class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 rounded-lg transition">
+                        Registrar Venta
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="bg-gray-800 rounded-xl p-6 border border-gray-700 shadow-xl">
+                <h3 class="text-lg font-medium mb-4 text-purple-400">Atribución de Contenido</h3>
+                <div class="space-y-4">
+                    <div class="flex flex-col">
+                        <label class="text-sm text-gray-400 mb-2">Ángulo Creativo del Reel</label>
+                        <select class="bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-purple-500">
+                            <option>Ambiente / Fiesta</option>
+                            <option>Gastronomía / Coctelería</option>
+                            <option>Promoción Directa (Cover/Descuento)</option>
+                            <option>UGC (Contenido de Clientes)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-800 rounded-xl p-6 border border-gray-700 shadow-xl">
+                <h3 class="text-lg font-medium mb-4 text-orange-400">Acciones de Base de Datos</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <button class="flex items-center justify-center p-4 bg-gray-700 rounded-xl hover:bg-gray-600 transition border border-gray-600">
+                        <i class="fa-solid fa-paper-plane mr-2"></i> Remarketing WhatsApp
+                    </button>
+                    <button class="flex items-center justify-center p-4 bg-gray-700 rounded-xl hover:bg-gray-600 transition border border-gray-600">
+                        <i class="fa-solid fa-sync mr-2"></i> Sincronizar CAPI
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="fixed bottom-0 w-full bg-gray-900 border-t border-gray-800 p-4">
+        <div class="container mx-auto flex justify-around text-center">
+            <div>
+                <p class="text-xs text-gray-500 uppercase">CAC (Primario)</p>
+                <p class="text-xl font-bold text-blue-400">$0.00</p>
+            </div>
+            <div>
+                <p class="text-xs text-gray-500 uppercase">ROAS (Primario)</p>
+                <p class="text-xl font-bold text-green-400">0.0x</p>
+            </div>
+            <div>
+                <p class="text-xs text-gray-500 uppercase">Hook Rate (Secundario)</p>
+                <p class="text-xl font-bold text-purple-400">0%</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAmpI2Q-QWK5lWAJJj4lyvQcFKisFPAVJg",
+            authDomain: "bridge-mkt.firebaseapp.com",
+            projectId: "bridge-mkt",
+            storageBucket: "bridge-mkt.firebasestorage.app",
+            messagingSenderId: "486490654127",
+            appId: "1:486490654127:web:2eba741cf467f8adc1db5a"
+        };
+
+        let app, auth, db;
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        auth = firebase.auth();
+        db = firebase.firestore();
+
+        // Sign in anonymously
+        auth.signInAnonymously()
+            .then(() => console.log('✅ Firebase inicializado correctamente'))
+            .catch(err => console.error('❌ Error Firebase:', err));
+
+        // Get input elements
+        const metaInput = document.querySelector('input[placeholder="0.00"]');
+        const reachInput = document.querySelectorAll('input[type="number"]')[1];
+        const leadsInput = document.querySelectorAll('input[type="number"]')[2];
+        const clientIdInput = document.querySelector('input[placeholder="MC-89234"]');
+        const ticketInput = document.querySelectorAll('input[step="0.01"]')[1];
+        const peopleInput = document.querySelectorAll('input[type="number"]')[3];
+        const creativoSelect = document.querySelector('select');
+        const registrarBtn = document.querySelector('button:has(i.fa-check)') || document.querySelectorAll('button')[document.querySelectorAll('button').length - 5];
+
+        // Save marketing inputs to Firestore
+        function saveMarketingData() {
+            const data = {
+                metaInversion: parseFloat(metaInput?.value || 0),
+                reach: parseInt(reachInput?.value || 0),
+                leads: parseInt(leadsInput?.value || 0),
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            db.collection('bridge_mkt_data').doc('marketing_metrics').set(data, { merge: true })
+                .then(() => console.log('✅ Marketing data saved'))
+                .catch(err => console.error('❌ Error:', err));
+        }
+
+        // Save POS transaction
+        function saveTransaction() {
+            if (!clientIdInput?.value || !ticketInput?.value) {
+                alert('Por favor completa los campos requeridos');
+                return;
+            }
+
+            const transaction = {
+                clientId: clientIdInput.value,
+                monto: parseFloat(ticketInput.value),
+                personas: parseInt(peopleInput?.value || 1),
+                creativo: creativoSelect?.value || 'Sin especificar',
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            db.collection('bridge_mkt_data').collection('transactions').add(transaction)
+                .then((docRef) => {
+                    console.log('✅ Transacción guardada:', docRef.id);
+                    clientIdInput.value = '';
+                    ticketInput.value = '';
+                    peopleInput.value = '1';
+                })
+                .catch(err => console.error('❌ Error:', err));
+        }
+
+        // Event listeners
+        if (registrarBtn) {
+            registrarBtn.addEventListener('click', saveTransaction);
+        }
+
+        // Auto-save marketing data when inputs change
+        [metaInput, reachInput, leadsInput].forEach(el => {
+            if (el) el.addEventListener('change', saveMarketingData);
+        });
+    </script>
+
+</body>
+</html>
