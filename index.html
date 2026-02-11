@@ -68,7 +68,7 @@
                     <input type="number" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none" placeholder="1">
                 </div>
                 <div class="flex items-end">
-                    <button class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 rounded-lg transition">
+                    <button id="registrar-btn" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 rounded-lg transition">
                         Registrar Venta
                     </button>
                 </div>
@@ -154,7 +154,7 @@
         const ticketInput = document.querySelectorAll('input[step="0.01"]')[1];
         const peopleInput = document.querySelectorAll('input[type="number"]')[3];
         const creativoSelect = document.querySelector('select');
-        const registrarBtn = document.querySelector('button:has(i.fa-check)') || document.querySelectorAll('button')[document.querySelectorAll('button').length - 5];
+        const registrarBtn = document.getElementById('registrar-btn');
 
         // Save marketing inputs to Firestore
         function saveMarketingData() {
